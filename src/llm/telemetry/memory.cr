@@ -30,7 +30,7 @@ module LLM::Telemetry
 
     class SpanRecord
       property started_ms : Float64
-      property clock : Time::Instant
+      property clock : Float64
       property ended_ms : Float64? = nil
       property id : Int64
       property parent_id : Int64?
@@ -49,6 +49,7 @@ module LLM::Telemetry
     end
 
     class State
+      getter clock : Clock
       getter scope : String = UUID.random.to_s
       getter spans = [] of SpanRecord
       getter measurements = [] of Measurement
@@ -56,6 +57,8 @@ module LLM::Telemetry
       property next_end_sequence = 1_i64
 
       setter owner : InMemoryTelemetryContext? = nil
+
+      def initialize(@clock : Clock); end
 
       def owner : InMemoryTelemetryContext
         @owner.not_nil!
@@ -88,7 +91,7 @@ module LLM::Telemetry
 
       def add_event(name : String, attributes : Attributes? = nil) : Nil
         return if @record.settled?
-        elapsed = (Time.instant - @record.clock).total_milliseconds
+        elapsed = @state.clock.elapsed_ms - @record.clock
         @record.events << TimedEvent.new(elapsed, name, Telemetry.copy_attributes(attributes))
       end
 
@@ -163,7 +166,7 @@ module LLM::Telemetry
 
       def record(value : Number, attributes : Attributes?, context : TelemetryContext?) : Nil
         carrier = context.try { |target| Telemetry.carrier_of(target) }
-        interval = (Time.utc.to_unix_ms // 10_000) * 10_000
+        interval = (@state.clock.now_ms // 10_000) * 10_000
         @state.measurements << Measurement.new(interval, RecordedMeasurement.new(
           @kind, @name, @description, @unit, @boundaries.try(&.dup), value.to_f64,
           Telemetry.copy_attributes(attributes), carrier.try(&.dup)))
@@ -196,8 +199,8 @@ module LLM::Telemetry
 
     @state : State
 
-    def initialize
-      @state = State.new
+    def initialize(clock : Clock = SYSTEM_CLOCK)
+      @state = State.new(clock)
       @state.owner = self
     end
 
@@ -317,7 +320,7 @@ module LLM::Telemetry
         raise error
       ensure
         entry.settled = true
-        entry.ended_ms = entry.started_ms + (Time.instant - entry.clock).total_milliseconds
+        entry.ended_ms = entry.started_ms + state.clock.elapsed_ms - entry.clock
         entry.end_sequence = state.next_end_sequence
         state.next_end_sequence += 1
       end
@@ -334,7 +337,7 @@ module LLM::Telemetry
       state.next_span_id += 1
       trace = parent.try(&.context[TRACE_KEY]?) || "#{state.scope}:#{id}"
       context = {SCOPE_KEY => state.scope, SPAN_KEY => id.to_s, TRACE_KEY => trace}
-      entry = SpanRecord.new(Time.utc.to_unix_ms.to_f64, Time.instant, id, parent.try(&.local_id), context,
+      entry = SpanRecord.new(state.clock.now_ms.to_f64, state.clock.elapsed_ms, id, parent.try(&.local_id), context,
         parent.try(&.context.dup), options.name, Telemetry.copy_attributes(options.attributes))
       entry.links = links
       entry
