@@ -1,0 +1,14 @@
+# shard.yml
+name: llm-telemetry
+version: 0.1.0
+
+authors:
+  - shpeckman
+
+description: |
+  Vendor-neutral tracing, metrics, propagation, in-memory recording,
+  querying, and trace rendering for Crystal.
+
+crystal: ">= 1.21.0"
+
+license: MIT
