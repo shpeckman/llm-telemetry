@@ -3,5 +3,6 @@ require "json"
 require "uuid"
 
 require "./llm/telemetry"
+require "./llm/telemetry/clock"
 require "./llm/telemetry/memory"
 require "./llm/telemetry/render"
