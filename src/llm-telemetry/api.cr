@@ -1,4 +1,4 @@
-# src/llm/telemetry.cr
+# src/llm-telemetry/api.cr
 module LLM::Telemetry
   alias AttributeValue = String | Int64 | Float64 | Bool | Array(String) | Array(Int64) | Array(Float64) | Array(Bool)
   alias Attributes = Hash(String, AttributeValue)

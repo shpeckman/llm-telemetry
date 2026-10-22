@@ -1,4 +1,4 @@
-# src/llm/telemetry/clock.cr
+# src/llm-telemetry/clock.cr
 module LLM::Telemetry
   abstract class Clock
     abstract def now_ms : Int64

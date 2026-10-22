@@ -1,4 +1,4 @@
-# src/llm/telemetry/memory.cr
+# src/llm-telemetry/memory.cr
 module LLM::Telemetry
   record RecordedEvent, name : String, attributes : Attributes
   record RecordedLink, context : Carrier, attributes : Attributes
