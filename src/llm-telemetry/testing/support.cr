@@ -1,4 +1,4 @@
-# src/llm/telemetry/testing/support.cr
+# src/llm-telemetry/testing/support.cr
 module LLM::Telemetry::Testing
   class ConformanceFailure < Exception
   end

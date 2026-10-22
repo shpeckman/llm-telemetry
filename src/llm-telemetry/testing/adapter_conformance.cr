@@ -1,4 +1,4 @@
-# src/llm/telemetry/testing/adapter_conformance.cr
+# src/llm-telemetry/testing/adapter_conformance.cr
 module LLM::Telemetry::Testing
   alias AdapterTest = AdapterFixture -> Nil
 

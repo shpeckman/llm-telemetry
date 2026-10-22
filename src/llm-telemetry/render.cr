@@ -1,4 +1,4 @@
-# src/llm/telemetry/render.cr
+# src/llm-telemetry/render.cr
 module LLM::Telemetry
   def self.render_trace(spans : Enumerable(StoredSpan)) : String
     by_id = {} of String => StoredSpan

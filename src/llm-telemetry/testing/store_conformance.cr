@@ -1,4 +1,4 @@
-# src/llm/telemetry/testing/store_conformance.cr
+# src/llm-telemetry/testing/store_conformance.cr
 module LLM::Telemetry::Testing
   alias StoreTest = StoreFactory -> Nil
 

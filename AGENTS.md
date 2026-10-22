@@ -15,16 +15,18 @@ match them.
 
 ## Repository layout
 
+All code lives under `src/llm-telemetry/`, next to the entry point `src/llm-telemetry.cr`. Crystal resolves `require "llm-telemetry/x"` to `src/llm-telemetry/x.cr`, so the entry point `src/llm-telemetry/testing.cr` shares the folder with the implementation of `LLM::Telemetry`. Paths follow the shard name, not the module path.
+
 ```
 src/llm-telemetry.cr                            Entry point: requires json, uuid and the library
 src/llm-telemetry/testing.cr                    Entry point for `require "llm-telemetry/testing"`
-src/llm/telemetry.cr                            Attributes, options, status, span/context/metrics/propagation contracts, store records, no-ops
-src/llm/telemetry/clock.cr                      Clock (now_ms, elapsed_ms, every), SystemClock, SYSTEM_CLOCK
-src/llm/telemetry/memory.cr                     InMemoryTelemetryContext: recording, propagation, store queries, snapshots
-src/llm/telemetry/render.cr                     render_trace
-src/llm/telemetry/testing/support.cr            Case, fixtures, ManualClock, assertions
-src/llm/telemetry/testing/adapter_conformance.cr  adapter_conformance (upstream src/testing/conformance.ts)
-src/llm/telemetry/testing/store_conformance.cr    store_conformance (upstream test/store-conformance.ts)
+src/llm-telemetry/api.cr                        Attributes, options, status, span/context/metrics/propagation contracts, store records, no-ops
+src/llm-telemetry/clock.cr                      Clock (now_ms, elapsed_ms, every), SystemClock, SYSTEM_CLOCK
+src/llm-telemetry/memory.cr                     InMemoryTelemetryContext: recording, propagation, store queries, snapshots
+src/llm-telemetry/render.cr                     render_trace
+src/llm-telemetry/testing/support.cr            Case, fixtures, ManualClock, assertions
+src/llm-telemetry/testing/adapter_conformance.cr  adapter_conformance (upstream src/testing/conformance.ts)
+src/llm-telemetry/testing/store_conformance.cr    store_conformance (upstream test/store-conformance.ts)
 spec/telemetry_spec.cr                          No-op, in-memory recorder and render_trace specs
 spec/conformance_spec.cr                        Both conformance suites against InMemoryTelemetryContext; clock specs
 examples/basic.cr                               Usage example
@@ -41,7 +43,7 @@ ameba
 ## Code standards
 
 - Every Crystal file opens with a single comment naming its path, e.g.
-  `# src/llm/telemetry/clock.cr`. No other comments in code.
+  `# src/llm-telemetry/clock.cr`. No other comments in code.
 - Compiler-friendly, performance-focused, idiomatic Crystal; data-driven design.
 - The usage-facing API must be ergonomic.
 - Prevent shotgun surgery: a behavior change should touch one cohesive spot.
